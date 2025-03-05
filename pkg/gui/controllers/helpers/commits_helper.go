@@ -19,9 +19,10 @@ type ICommitsHelper interface {
 type CommitsHelper struct {
 	c *HelperCommon
 
-	getCommitSummary              func() string
-	setCommitSummary              func(string)
-	getCommitDescription          func() string
+	getCommitSummary     func() string
+	setCommitSummary     func(string)
+	getCommitDescription func() string
+	// getVerifyFlag                 func() bool
 	getUnwrappedCommitDescription func() string
 	setCommitDescription          func(string)
 }
@@ -33,14 +34,16 @@ func NewCommitsHelper(
 	getCommitSummary func() string,
 	setCommitSummary func(string),
 	getCommitDescription func() string,
+	// getVerifyFlag func() bool,
 	getUnwrappedCommitDescription func() string,
 	setCommitDescription func(string),
 ) *CommitsHelper {
 	return &CommitsHelper{
-		c:                             c,
-		getCommitSummary:              getCommitSummary,
-		setCommitSummary:              setCommitSummary,
-		getCommitDescription:          getCommitDescription,
+		c:                    c,
+		getCommitSummary:     getCommitSummary,
+		setCommitSummary:     setCommitSummary,
+		getCommitDescription: getCommitDescription,
+		// getVerifyFlag:                 getVerifyFlag,
 		getUnwrappedCommitDescription: getUnwrappedCommitDescription,
 		setCommitDescription:          setCommitDescription,
 	}
@@ -125,9 +128,10 @@ type OpenCommitMessagePanelOpts struct {
 	CommitIndex      int
 	SummaryTitle     string
 	DescriptionTitle string
+	verify           bool
 	PreserveMessage  bool
-	OnConfirm        func(summary string, description string) error
-	OnSwitchToEditor func(string) error
+	OnConfirm        func(summary string, description string, verify bool) error
+	OnSwitchToEditor func(string, bool) error
 	InitialMessage   string
 }
 
@@ -135,7 +139,11 @@ func (self *CommitsHelper) OpenCommitMessagePanel(opts *OpenCommitMessagePanelOp
 	onConfirm := func(summary string, description string) error {
 		self.CloseCommitMessagePanel()
 
-		return opts.OnConfirm(summary, description)
+		return opts.OnConfirm(summary, description, opts.verify)
+	}
+
+	onSwitchToEditor := func(message string) error {
+		return opts.OnSwitchToEditor(message, opts.verify)
 	}
 
 	self.c.Contexts().CommitMessage.SetPanelState(
@@ -145,7 +153,7 @@ func (self *CommitsHelper) OpenCommitMessagePanel(opts *OpenCommitMessagePanelOp
 		opts.PreserveMessage,
 		opts.InitialMessage,
 		onConfirm,
-		opts.OnSwitchToEditor,
+		onSwitchToEditor,
 	)
 
 	self.UpdateCommitPanelView(opts.InitialMessage)
