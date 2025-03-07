@@ -19,10 +19,9 @@ type ICommitsHelper interface {
 type CommitsHelper struct {
 	c *HelperCommon
 
-	getCommitSummary     func() string
-	setCommitSummary     func(string)
-	getCommitDescription func() string
-	// getVerifyFlag                 func() bool
+	getCommitSummary              func() string
+	setCommitSummary              func(string)
+	getCommitDescription          func() string
 	getUnwrappedCommitDescription func() string
 	setCommitDescription          func(string)
 }
@@ -34,16 +33,14 @@ func NewCommitsHelper(
 	getCommitSummary func() string,
 	setCommitSummary func(string),
 	getCommitDescription func() string,
-	// getVerifyFlag func() bool,
 	getUnwrappedCommitDescription func() string,
 	setCommitDescription func(string),
 ) *CommitsHelper {
 	return &CommitsHelper{
-		c:                    c,
-		getCommitSummary:     getCommitSummary,
-		setCommitSummary:     setCommitSummary,
-		getCommitDescription: getCommitDescription,
-		// getVerifyFlag:                 getVerifyFlag,
+		c:                             c,
+		getCommitSummary:              getCommitSummary,
+		setCommitSummary:              setCommitSummary,
+		getCommitDescription:          getCommitDescription,
 		getUnwrappedCommitDescription: getUnwrappedCommitDescription,
 		setCommitDescription:          setCommitDescription,
 	}
