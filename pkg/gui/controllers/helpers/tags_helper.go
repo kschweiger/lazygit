@@ -42,7 +42,7 @@ func (self *TagsHelper) OpenCreateTagPrompt(ref string, onCreate func()) error {
 		})
 	}
 
-	onConfirm := func(tagName string, description string, verify bool) error {
+	onConfirm := func(tagName string, description string, forceSkipHooks bool) error {
 		if self.c.Git().Tag.HasTag(tagName) {
 			prompt := utils.ResolvePlaceholderString(
 				self.c.Tr.ForceTagPrompt,
@@ -72,7 +72,7 @@ func (self *TagsHelper) OpenCreateTagPrompt(ref string, onCreate func()) error {
 			InitialMessage:   "",
 			SummaryTitle:     self.c.Tr.TagNameTitle,
 			DescriptionTitle: self.c.Tr.TagMessageTitle,
-			verify:           false,
+			forceSkipHooks:   false,
 			PreserveMessage:  false,
 			OnConfirm:        onConfirm,
 		},

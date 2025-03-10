@@ -125,9 +125,9 @@ type OpenCommitMessagePanelOpts struct {
 	CommitIndex      int
 	SummaryTitle     string
 	DescriptionTitle string
-	verify           bool
+	forceSkipHooks   bool
 	PreserveMessage  bool
-	OnConfirm        func(summary string, description string, verify bool) error
+	OnConfirm        func(summary string, description string, forceSkipHooks bool) error
 	OnSwitchToEditor func(string, bool) error
 	InitialMessage   string
 }
@@ -136,11 +136,11 @@ func (self *CommitsHelper) OpenCommitMessagePanel(opts *OpenCommitMessagePanelOp
 	onConfirm := func(summary string, description string) error {
 		self.CloseCommitMessagePanel()
 
-		return opts.OnConfirm(summary, description, opts.verify)
+		return opts.OnConfirm(summary, description, opts.forceSkipHooks)
 	}
 
 	onSwitchToEditor := func(message string) error {
-		return opts.OnSwitchToEditor(message, opts.verify)
+		return opts.OnSwitchToEditor(message, opts.forceSkipHooks)
 	}
 
 	self.c.Contexts().CommitMessage.SetPanelState(
